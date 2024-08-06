@@ -17,11 +17,16 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-city-card',
   template: `
-    <app-card (addNewItem)="this.store.addOne(randCity())">
+    <app-card
+      (addNewItem)="addCity()"
+      (deleteItem)="deleteCity($event)"
+      name="name"
+      [items]="cities"
+      ]>
       <img src="assets/img/city.png" width="200px" />
       <ng-content ngProjectAs="items">
         @for (item of cities; track item.id) {
-          <app-list-item (delete)="store.deleteOne(item.id)">
+          <app-list-item (delete)="deleteCity(item.id)">
             {{ item.name }}
           </app-list-item>
         }
@@ -33,7 +38,6 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
 })
 export class CityCardComponent implements OnInit, AfterViewChecked {
   cities: City[] = [];
-  randCity: () => City = randomCity;
   @ViewChild(CardComponent, { static: true, read: ElementRef })
   card!: ElementRef;
 
@@ -50,5 +54,13 @@ export class CityCardComponent implements OnInit, AfterViewChecked {
   ngAfterViewChecked() {
     this.card.nativeElement.children[0].style.backgroundColor =
       'rgba(0, 0, 250, 0.1)';
+  }
+
+  addCity() {
+    this.store.addOne(randomCity());
+  }
+
+  deleteCity(id: number) {
+    this.store.deleteOne(id);
   }
 }

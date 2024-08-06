@@ -16,15 +16,14 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-student-card',
   template: `
-    <app-card (addNewItem)="this.store.addOne(randStudent())">
+    <app-card
+      (addNewItem)="addStudent()"
+      (deleteItem)="deleteStudent($event)"
+      name="firstName"
+      [items]="students"
+      ]>
       <img src="assets/img/student.webp" width="200px" />
-      <ng-content ngProjectAs="items">
-        @for (item of students; track item.id) {
-          <app-list-item (delete)="store.deleteOne(item.id)">
-            {{ item.firstName }}
-          </app-list-item>
-        }
-      </ng-content>
+      <ng-content ngProjectAs="items"></ng-content>
     </app-card>
   `,
   standalone: true,
@@ -32,7 +31,6 @@ import { ListItemComponent } from '../../ui/list-item/list-item.component';
 })
 export class StudentCardComponent implements OnInit, AfterViewChecked {
   students: Student[] = [];
-  randStudent: () => Student = randStudent;
   @ViewChild(CardComponent, { static: true, read: ElementRef })
   card!: ElementRef;
 
@@ -49,5 +47,13 @@ export class StudentCardComponent implements OnInit, AfterViewChecked {
   ngAfterViewChecked() {
     this.card.nativeElement.children[0].style.backgroundColor =
       'rgba(0, 250, 0, 0.1)';
+  }
+
+  addStudent() {
+    this.store.addOne(randStudent());
+  }
+
+  deleteStudent(id: number) {
+    this.store.deleteOne(id);
   }
 }
