@@ -1,24 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { Store } from '../../model/store.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-list-item',
   template: `
     <div class="border-grey-300 flex justify-between border px-2 py-1">
-      {{ name }}
-      <button (click)="delete(id)">
+      <ng-content />
+      <button (click)="delete.emit()">
         <img class="h-5" src="assets/svg/trash.svg" />
       </button>
     </div>
   `,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListItemComponent<T> {
-  @Input() store!: Store<T>;
-  @Input() id!: number;
-  @Input() name!: string;
-
-  delete(id: number) {
-    this.store.deleteOne(id);
-  }
+export class ListItemComponent {
+  @Output() delete = new EventEmitter<void>();
 }

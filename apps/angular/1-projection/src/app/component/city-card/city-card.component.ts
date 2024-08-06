@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CityStore } from '../../data-access/city.store';
 import {
   FakeHttpService,
@@ -6,24 +13,29 @@ import {
 } from '../../data-access/fake-http.service';
 import { City } from '../../model/city.model';
 import { CardComponent } from '../../ui/card/card.component';
+import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-city-card',
   template: `
-    <app-card
-      [list]="cities"
-      itemName="name"
-      [store]="store"
-      [randomData]="randCity"
-      imgSrc="assets/img/city.png"
-      [backgroundColor]="backgroundColor"></app-card>
+    <app-card (addNewItem)="this.store.addOne(randCity())">
+      <img src="assets/img/city.png" width="200px" />
+      <ng-content ngProjectAs="items">
+        @for (item of cities; track item.id) {
+          <app-list-item (delete)="store.deleteOne(item.id)">
+            {{ item.name }}
+          </app-list-item>
+        }
+      </ng-content>
+    </app-card>
   `,
   standalone: true,
-  imports: [CardComponent],
+  imports: [CommonModule, CardComponent, ListItemComponent],
 })
-export class CityCardComponent implements OnInit {
+export class CityCardComponent implements OnInit, AfterViewChecked {
   cities: City[] = [];
   randCity: () => City = randomCity;
-  backgroundColor = 'rgba(0, 0, 250, 0.1)';
+  @ViewChild(CardComponent, { static: true, read: ElementRef })
+  card!: ElementRef;
 
   constructor(
     private http: FakeHttpService,
@@ -33,5 +45,10 @@ export class CityCardComponent implements OnInit {
   ngOnInit(): void {
     this.http.fetchCities$.subscribe((t) => this.store.addAll(t));
     this.store.cities$.subscribe((t) => (this.cities = t));
+  }
+
+  ngAfterViewChecked() {
+    this.card.nativeElement.children[0].style.backgroundColor =
+      'rgba(0, 0, 250, 0.1)';
   }
 }

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { City } from '../model/city.model';
-import { Store } from '../model/store.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CityStore implements Store<City> {
+export class CityStore {
   private cities = new BehaviorSubject<City[]>([]);
   cities$ = this.cities.asObservable();
 
