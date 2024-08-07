@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 
 @Component({
   selector: 'app-list-item',
@@ -19,5 +14,5 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListItemComponent {
-  @Output() delete = new EventEmitter<void>();
+  delete = output<void>();
 }

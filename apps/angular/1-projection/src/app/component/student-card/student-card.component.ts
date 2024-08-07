@@ -11,23 +11,23 @@ import {
 } from '../../data-access/fake-http.service';
 import { StudentStore } from '../../data-access/student.store';
 import { Student } from '../../model/student.model';
+import { CardRowDirective } from '../../ui/card/card-row.directive';
 import { CardComponent } from '../../ui/card/card.component';
 import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-student-card',
   template: `
-    <app-card
-      (addNewItem)="addStudent()"
-      (deleteItem)="deleteStudent($event)"
-      name="firstName"
-      [items]="students"
-      ]>
+    <app-card (addNewItem)="addStudent()" [items]="students">
       <img src="assets/img/student.webp" width="200px" />
-      <ng-content ngProjectAs="items"></ng-content>
+      <ng-template [cardRow]="students" let-student>
+        <app-list-item (delete)="deleteStudent(student.id)">
+          {{ student.firstName }}
+        </app-list-item>
+      </ng-template>
     </app-card>
   `,
   standalone: true,
-  imports: [CardComponent, ListItemComponent],
+  imports: [CardComponent, CardRowDirective, ListItemComponent],
 })
 export class StudentCardComponent implements OnInit, AfterViewChecked {
   students: Student[] = [];

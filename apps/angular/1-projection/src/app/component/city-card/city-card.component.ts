@@ -12,29 +12,23 @@ import {
   randomCity,
 } from '../../data-access/fake-http.service';
 import { City } from '../../model/city.model';
+import { CardRowDirective } from '../../ui/card/card-row.directive';
 import { CardComponent } from '../../ui/card/card.component';
 import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-city-card',
   template: `
-    <app-card
-      (addNewItem)="addCity()"
-      (deleteItem)="deleteCity($event)"
-      name="name"
-      [items]="cities"
-      ]>
+    <app-card (addNewItem)="addCity()" name="name" [items]="cities">
       <img src="assets/img/city.png" width="200px" />
-      <ng-content ngProjectAs="items">
-        @for (item of cities; track item.id) {
-          <app-list-item (delete)="deleteCity(item.id)">
-            {{ item.name }}
-          </app-list-item>
-        }
-      </ng-content>
+      <ng-template [cardRow]="cities" let-city>
+        <app-list-item (delete)="deleteCity(city.id)">
+          {{ city.name }}
+        </app-list-item>
+      </ng-template>
     </app-card>
   `,
   standalone: true,
-  imports: [CommonModule, CardComponent, ListItemComponent],
+  imports: [CommonModule, CardRowDirective, CardComponent, ListItemComponent],
 })
 export class CityCardComponent implements OnInit, AfterViewChecked {
   cities: City[] = [];

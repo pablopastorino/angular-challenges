@@ -11,29 +11,23 @@ import {
 } from '../../data-access/fake-http.service';
 import { TeacherStore } from '../../data-access/teacher.store';
 import { Teacher } from '../../model/teacher.model';
+import { CardRowDirective } from '../../ui/card/card-row.directive';
 import { CardComponent } from '../../ui/card/card.component';
 import { ListItemComponent } from '../../ui/list-item/list-item.component';
 @Component({
   selector: 'app-teacher-card',
   template: `
-    <app-card
-      (addNewItem)="addTeacher()"
-      (deleteItem)="deleteTeacher($event)"
-      name="firstName"
-      [items]="teachers"
-      ]>
+    <app-card (addNewItem)="addTeacher()" [items]="teachers">
       <img src="assets/img/teacher.png" width="200px" />
-      <ng-content ngProjectAs="items">
-        @for (item of teachers; track item.id) {
-          <app-list-item (delete)="deleteTeacher(item.id)">
-            {{ item.firstName }}
-          </app-list-item>
-        }
-      </ng-content>
+      <ng-template [cardRow]="teachers" let-teacher>
+        <app-list-item (delete)="deleteTeacher(teacher.id)">
+          {{ teacher.firstName }}
+        </app-list-item>
+      </ng-template>
     </app-card>
   `,
   standalone: true,
-  imports: [CardComponent, ListItemComponent],
+  imports: [CardComponent, CardRowDirective, ListItemComponent],
 })
 export class TeacherCardComponent implements OnInit, AfterViewChecked {
   teachers: Teacher[] = [];
